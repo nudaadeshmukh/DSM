@@ -168,7 +168,11 @@ Use Live Server (recommended)
 
 ## 👥 Team Responsibilities
 
-- **Frontend Developer** – UI & user interaction
-- **Backend Developer** – API & server logic
-- **Optimization Engineer** – EOQ, ROP, Graph algorithms
-- **Database Engineer** – Schema & data management
+- **Riya Kumbhoje** – Frontend Developer  
+  UI & user interaction
+- **Gargi Joshi** – Backend Developer  
+  API & server logic
+- **Nudaa Deshmukh** – Optimization Engineer  
+  EOQ, ROP, Graph algorithms
+- **Koyal Kembhavi** – Database Engineer  
+  Schema & data management
