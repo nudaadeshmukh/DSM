@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supply Chain - Homepage</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-content">
+      <a href="index.html" class="navbar-brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+            <line x1="12" y1="22.08" x2="12" y2="12"/>
+          </svg>
+        </div>
+        <span class="brand-text">Supply Chain</span>
+      </a>
+
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="features.html" class="nav-link">Features</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+        <li><a href="login.html" class="btn btn-secondary">Login</a></li>
+        <li><a href="signup.html" class="btn btn-primary">Sign Up</a></li>
+      </ul>
+
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>
+        Optimize Your<br>
+        <span class="gradient-text">Supply Chain</span>
+      </h1>
+      <p>
+        Streamline operations, reduce costs, and improve efficiency with our advanced
+        supply chain optimization platform.
+      </p>
+      <div class="hero-buttons">
+        <a href="signup.html" class="btn btn-primary btn-lg">Get Started</a>
+        <a href="about.html" class="btn btn-secondary btn-lg">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="container" style="padding: 80px 24px;">
+    <div class="grid grid-cols-1 grid-cols-md-3">
+      <div class="glass-card feature-card">
+        <div class="feature-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <h3>Demand Forecasting</h3>
+        <p>Predict future demand with AI algorithms</p>
+      </div>
+
+      <div class="glass-card feature-card">
+        <div class="feature-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <rect x="1" y="3" width="15" height="13"/>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/>
+            <circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+        </div>
+        <h3>Route Optimization</h3>
+        <p>Minimize transportation costs and time</p>
+      </div>
+
+      <div class="glass-card feature-card">
+        <div class="feature-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          </svg>
+        </div>
+        <h3>Inventory Management</h3>
+        <p>Calculate optimal stock levels</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="container" style="padding: 0 24px 80px;">
+    <div class="glass-card stats">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <h3>500+</h3>
+          <p>Companies Trust Us</p>
+        </div>
+        <div class="stat-item">
+          <h3>35%</h3>
+          <p>Average Cost Reduction</p>
+        </div>
+        <div class="stat-item">
+          <h3>24/7</h3>
+          <p>Real-Time Monitoring</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="hero" style="padding: 48px 24px;">
+    <div class="container text-center">
+      <h2 style="font-size: 36px; font-weight: 700; margin-bottom: 24px; color: #1f2937;">
+        Ready to Transform Your Supply Chain?
+      </h2>
+      <p style="font-size: 20px; color: #374151; margin-bottom: 32px;">
+        Join hundreds of companies optimizing their operations today.
+      </p>
+      <a href="signup.html" class="btn btn-primary btn-lg">Start NOW</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Supply Chain </h3>
+        <p>Optimize your supply chain operations with advanced algorithms and real-time analytics.</p>
+      </div>
+
+      <div class="footer-section">
+        <h4>Product</h4>
+        <a href="features.html">Features</a>
+        <a href="about.html">About Us</a>
+        <a href="#">Pricing</a>
+      </div>
+
+      <div class="footer-section">
+        <h4>Company</h4>
+        <a href="#">Blog</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 Supply Chain. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

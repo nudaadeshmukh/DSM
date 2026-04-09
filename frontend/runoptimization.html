@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Run Optimization - Supply Chain Pro</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="dashboard">
+    <aside class="sidebar">
+      <div class="navbar-brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          </svg>
+        </div>
+        <span style="font-weight: 700; color: #1f2937;">Supply Chain Pro</span>
+      </div>
+
+      <ul class="sidebar-nav">
+        <li><a href="dashboard.html" class="sidebar-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a></li>
+        <li><a href="supplychain.html" class="sidebar-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          Supply Chain Data
+        </a></li>
+        <li><a href="runoptimization.html" class="sidebar-link active">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Run Optimization
+        </a></li>
+        <li><a href="results.html" class="sidebar-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Results
+        </a></li>
+      </ul>
+    </aside>
+
+    <div style="flex: 1;">
+      <nav class="dashboard-navbar">
+        <div class="navbar-brand">
+          <div class="brand-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          </div>
+          <span style="font-weight: 700; color: #1f2937;">Supply Chain Pro</span>
+        </div>
+        <div class="profile-circle" onclick="toggleProfileDropdown(event)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <div class="profile-dropdown">
+            <div class="profile-info">
+                <p id="profileName"></p>
+                <small id="profileEmail"></small>
+            </div>
+            <a href="profile.html">Profile Settings</a>
+            <a href="index.html">Logout</a>
+          </div>
+        </div>
+      </nav>
+
+      <main class="main-content">
+        <div class="page-header">
+          <h1>Run Optimization</h1>
+          <p>Execute supply chain optimization algorithms</p>
+        </div>
+
+        <div class="optimization-container">
+          <div class="glass-card optimization-card">
+            <div class="optimization-icon">
+              <svg id="optimizeIcon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+            </div>
+
+            <h2>Ready to Optimize</h2>
+            <p id="statusText">Click the button below to run optimization algorithms on your supply chain data</p>
+
+            <button id="optimizeBtn" class="btn btn-primary btn-lg" onclick="runOptimization()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline; margin-right: 8px;">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              <span id="optimizeText">Run Optimization</span>
+            </button>
+
+            <div id="progressBar" class="progress-bar" style="display: none;">
+              <div class="progress-fill"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
