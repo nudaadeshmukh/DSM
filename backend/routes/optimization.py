@@ -6,20 +6,24 @@ optimization_bp = Blueprint('optimization', __name__)
 
 
 def _build_graph(db) -> dict:
-    """
-    Build a graph dict from transportation_routes table.
-    Node labels are strings like 'S1', 'W2', 'R3'
-    (Supplier/Warehouse/Retailer + their ID).
-    """
     routes = db.execute('SELECT * FROM transportation_routes').fetchall()
     graph = {}
+
     for route in routes:
-        src  = str(route['source_id'])
-        dest = str(route['destination_id'])
+        # Add prefixes based on type
+        src_type = route['source_type']      # e.g. 'S', 'W', 'R'
+        dest_type = route['destination_type']
+
+        src  = f"{src_type}{route['source_id']}"
+        dest = f"{dest_type}{route['destination_id']}"
+
         cost = route['cost']
+
         graph.setdefault(src,  {})[dest] = cost
-        graph.setdefault(dest, {})[src]  = cost   # undirected
+        graph.setdefault(dest, {})[src]  = cost
+
     return graph
+
 
 
 @optimization_bp.route('/optimize', methods=['POST'])
@@ -62,11 +66,11 @@ def run_optimization():
     # ── Default nodes if not provided ──
     if start_node is None:
         first_supplier = db.execute('SELECT supplier_id FROM suppliers LIMIT 1').fetchone()
-        start_node = str(first_supplier['supplier_id']) if first_supplier else '1'
+        start_node = f"S{first_supplier['supplier_id']}"  if first_supplier else '1'
 
     if end_node is None:
         first_retailer = db.execute('SELECT retailer_id FROM retailers LIMIT 1').fetchone()
-        end_node = str(first_retailer['retailer_id']) if first_retailer else '3'
+        end_node   = f"R{first_retailer['retailer_id']}" if first_retailer else '3'
 
     # ── Calculations ──
     try:
@@ -78,9 +82,26 @@ def run_optimization():
     daily_demand = D / 365
     rop = calculate_rop(daily_demand, L)
 
+
+
+
     # Shortest path via Dijkstra
     graph = _build_graph(db)
-    transport_cost, path = dijkstra(graph, start_node, end_node)
+    if not graph:
+        return jsonify({
+            "message": "No routes available yet. Database not populated."
+        }), 200
+
+    try:
+        transport_cost, path = dijkstra(graph, start_node, end_node)
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
+    # Handle Dijkstra errors
+    try:
+        transport_cost, path = dijkstra(graph, start_node, end_node)
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
 
     if not path:
         return jsonify({
