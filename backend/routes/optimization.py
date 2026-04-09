@@ -1,23 +1,29 @@
 from flask import Blueprint, request, jsonify, session
-from database import get_db
+from database import get_db, resolve_table_name
 from optimization import calculate_eoq, calculate_rop, dijkstra, calculate_total_cost
 
 optimization_bp = Blueprint('optimization', __name__)
 
 
 def _build_graph(db) -> dict:
-    routes = db.execute('SELECT * FROM transportation_routes').fetchall()
+    routes_table = resolve_table_name(db, ['transportation_routes', 'routes'])
+    routes = db.execute(f'SELECT * FROM {routes_table}').fetchall()
     graph = {}
 
     for route in routes:
-        # Add prefixes based on type
-        src_type = route['source_type']      # e.g. 'S', 'W', 'R'
-        dest_type = route['destination_type']
+        # Support both schemas:
+        # 1) transportation_routes(source_id, destination_id, source_type, destination_type, cost)
+        # 2) routes(source, destination, cost)
+        if 'source_type' in route and 'destination_type' in route:
+            src = f"{route['source_type']}{route['source_id']}"
+            dest = f"{route['destination_type']}{route['destination_id']}"
+        else:
+            src = str(route.get('source', ''))
+            dest = str(route.get('destination', ''))
 
-        src  = f"{src_type}{route['source_id']}"
-        dest = f"{dest_type}{route['destination_id']}"
-
-        cost = route['cost']
+        cost = float(route['cost'])
+        if not src or not dest:
+            continue
 
         graph.setdefault(src,  {})[dest] = cost
         graph.setdefault(dest, {})[src]  = cost

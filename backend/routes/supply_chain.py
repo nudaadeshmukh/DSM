@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from database import get_db
+from database import get_db, resolve_table_name
 
 supply_chain_bp = Blueprint('supply_chain', __name__)
 
@@ -197,7 +197,7 @@ def get_inventory():
 @supply_chain_bp.route('/inventory', methods=['POST'])
 def add_inventory():
     data          = request.get_json()
-    location_id   = data.get('location_id')
+    location_id   = data.get('location_id', data.get('warehouse_id'))
     product_id    = data.get('product_id')
     demand        = data.get('demand')
     ordering_cost = data.get('ordering_cost')
@@ -205,16 +205,30 @@ def add_inventory():
     lead_time     = data.get('lead_time')
 
     if None in [location_id, product_id, demand, ordering_cost, holding_cost, lead_time]:
-        return jsonify({'error': 'All inventory fields are required.'}), 400
+        return jsonify({
+            'error': 'warehouse_id/location_id, product_id, demand, ordering_cost, holding_cost, and lead_time are required.'
+        }), 400
 
     db  = get_db()
-    cur = db.execute(
-        '''INSERT INTO inventory
-           (location_id, product_id, demand, ordering_cost, holding_cost, lead_time)
-           VALUES (?, ?, ?, ?, ?, ?)''',
-        (location_id, product_id, float(demand),
-         float(ordering_cost), float(holding_cost), float(lead_time))
-    )
+    try:
+        cur = db.execute(
+            '''INSERT INTO inventory
+               (location_id, product_id, demand, ordering_cost, holding_cost, lead_time)
+               VALUES (?, ?, ?, ?, ?, ?)''',
+            (location_id, product_id, float(demand),
+             float(ordering_cost), float(holding_cost), float(lead_time))
+        )
+    except Exception as exc:
+        # Many existing schemas use `warehouse_id` instead of `location_id`.
+        if "Unknown column 'location_id'" not in str(exc):
+            raise
+        cur = db.execute(
+            '''INSERT INTO inventory
+               (warehouse_id, product_id, demand, ordering_cost, holding_cost, lead_time)
+               VALUES (?, ?, ?, ?, ?, ?)''',
+            (location_id, product_id, float(demand),
+             float(ordering_cost), float(holding_cost), float(lead_time))
+        )
     db.commit()
     return jsonify({'message': 'Inventory added.', 'inventory_id': cur.lastrowid}), 201
 
@@ -232,7 +246,8 @@ def delete_inventory(inventory_id):
 @supply_chain_bp.route('/routes', methods=['GET'])
 def get_routes():
     db = get_db()
-    rows = db.execute('SELECT * FROM transportation_routes').fetchall()
+    routes_table = resolve_table_name(db, ['transportation_routes', 'routes'])
+    rows = db.execute(f'SELECT * FROM {routes_table}').fetchall()
     return jsonify([dict(r) for r in rows]), 200
 
 
@@ -241,14 +256,32 @@ def add_route():
     data           = request.get_json()
     source_id      = data.get('source_id')
     destination_id = data.get('destination_id')
+    source_type    = data.get('source_type')
+    destination_type = data.get('destination_type')
     cost           = data.get('cost')
-    if None in [source_id, destination_id, cost]:
-        return jsonify({'error': 'source_id, destination_id, and cost are required.'}), 400
+    if None in [source_id, destination_id, cost] or not source_type or not destination_type:
+        return jsonify({
+            'error': 'source_id, destination_id, source_type, destination_type, and cost are required.'
+        }), 400
     db  = get_db()
-    cur = db.execute(
-        'INSERT INTO transportation_routes (source_id, destination_id, cost) VALUES (?, ?, ?)',
-        (source_id, destination_id, float(cost))
-    )
+    routes_table = resolve_table_name(db, ['transportation_routes', 'routes'])
+    try:
+        cur = db.execute(
+            f'''INSERT INTO {routes_table}
+               (source_id, destination_id, source_type, destination_type, cost)
+               VALUES (?, ?, ?, ?, ?)''',
+            (source_id, destination_id, source_type, destination_type, float(cost))
+        )
+    except Exception as exc:
+        # Existing schema fallback: routes(source, destination, cost)
+        if "Unknown column 'source_id'" not in str(exc):
+            raise
+        cur = db.execute(
+            f'''INSERT INTO {routes_table}
+               (source, destination, cost)
+               VALUES (?, ?, ?)''',
+            (f"{source_type}{source_id}", f"{destination_type}{destination_id}", float(cost))
+        )
     db.commit()
     return jsonify({'message': 'Route added.', 'route_id': cur.lastrowid}), 201
 
@@ -256,6 +289,7 @@ def add_route():
 @supply_chain_bp.route('/routes/<int:route_id>', methods=['DELETE'])
 def delete_route(route_id):
     db = get_db()
-    db.execute('DELETE FROM transportation_routes WHERE route_id = ?', (route_id,))
+    routes_table = resolve_table_name(db, ['transportation_routes', 'routes'])
+    db.execute(f'DELETE FROM {routes_table} WHERE route_id = ?', (route_id,))
     db.commit()
     return jsonify({'message': 'Route deleted.'}), 200
