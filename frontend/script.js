@@ -25,25 +25,39 @@ function handleLogin(event) {
   event.preventDefault();
 
   const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-  // simple name extraction from email (before @)
-  const name = email.split("@")[0];
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+
+  if (!storedUser) {
+    alert("No user found. Please signup first.");
+    return;
+  }
+
+  if (email === storedUser.email && password === storedUser.password) {
+    localStorage.setItem("user", JSON.stringify(storedUser));
+    window.location.href = "dashboard.html";
+  } else {
+    alert("Invalid email or password");
+  }
+}
+
+function handleSignup(event) {
+  event.preventDefault();
+
+  const name = document.getElementById("fullName").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
   const user = {
     name: name,
-    email: email
-    
+    email: email,
+    password: password
   };
 
   localStorage.setItem("user", JSON.stringify(user));
 
   window.location.href = "dashboard.html";
-  
-}
-
-function handleSignup(event) {
-  event.preventDefault();
-  window.location.href = 'dashboard.html';
 }
 
 // Supply Chain Data Management

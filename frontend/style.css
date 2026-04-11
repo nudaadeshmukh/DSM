@@ -99,8 +99,10 @@ body {
   border: none;
   cursor: pointer;
   font-size: 14px;
+
   display: inline-flex;
   align-items: center;
+  justify-content: center;   
   gap: 8px;
 }
 
@@ -758,7 +760,7 @@ table tbody tr:hover {
 /* Profile Page Extra Styling */
 
 .profile-avatar {
-  width: 70px;
+  width: 80px;
   height: 70px;
   margin: 20px auto;
   border-radius: 50%;
@@ -772,11 +774,11 @@ table tbody tr:hover {
 }
 
 .profile-info-box {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.2);
   padding: 15px;
   border-radius: 10px;
   margin-bottom: 20px;
-  color: white;
+  color: rgb(9, 60, 65);
 }
 
 .profile-info-box p {
@@ -796,7 +798,7 @@ table tbody tr:hover {
   text-decoration: underline;
 }
 
-#msg {
+#msg {  
   text-align: center;
   margin-top: 10px;
 }
