@@ -1,8 +1,66 @@
 from flask import Blueprint, request, jsonify, session
 from database import get_db, resolve_table_name
-from optimization import calculate_eoq, calculate_rop, dijkstra, calculate_total_cost
+from optimization import (
+    calculate_eoq,
+    calculate_rop,
+    dijkstra,
+    annual_inventory_cost_breakdown,
+)
 
 optimization_bp = Blueprint('optimization', __name__)
+
+
+def _product_lines_for_inventory(db, transport_cost: float) -> list:
+    """
+    One result row per inventory record, using that row's demand and costs.
+    Transport cost is the shared path cost from the network optimization.
+    """
+    inv_rows = db.execute('SELECT * FROM inventory').fetchall()
+    if not inv_rows:
+        return []
+
+    prod_rows = db.execute('SELECT product_id, name FROM products').fetchall()
+    pid_to_name = {int(r['product_id']): r['name'] for r in prod_rows}
+
+    lines = []
+    for row in inv_rows:
+        pid = int(row['product_id'])
+        D = float(row['demand'])
+        S = float(row['ordering_cost'])
+        H = float(row['holding_cost'])
+        L = float(row['lead_time'])
+        loc = row['location_id'] if 'location_id' in row else None
+        if loc is None and 'warehouse_id' in row:
+            loc = row['warehouse_id']
+        name = pid_to_name.get(pid, f'Product #{pid}')
+        label = f'{name} (location {loc})' if loc is not None else name
+
+        eoq = calculate_eoq(D, S, H)
+        daily_demand = D / 365.0
+        rop = calculate_rop(daily_demand, L)
+        bd = annual_inventory_cost_breakdown(D, S, H, transport_cost)
+
+        lines.append({
+            'inventory_id': int(row['inventory_id']),
+            'product_id': pid,
+            'label': label,
+            'product_name': name,
+            'location_id': int(loc) if loc is not None else None,
+            'eoq': eoq,
+            'rop': rop,
+            'transport_cost': bd['transport_cost'],
+            'annual_ordering_cost': bd['annual_ordering_cost'],
+            'annual_holding_cost': bd['annual_holding_cost'],
+            'total_cost': bd['total_cost'],
+        })
+    return lines
+
+
+def _summary_product_label(db) -> str:
+    rows = db.execute('SELECT name FROM products ORDER BY product_id').fetchall()
+    if len(rows) == 1:
+        return rows[0]['name']
+    return 'Optimization summary'
 
 
 def _build_graph(db) -> dict:
@@ -94,20 +152,47 @@ def run_optimization():
     # Shortest path via Dijkstra
     graph = _build_graph(db)
     if not graph:
+        transport_cost = 0.0
+        breakdown = annual_inventory_cost_breakdown(D, S, H, transport_cost)
+        total_cost = breakdown['total_cost']
+        path_str = '— (add transportation routes in Supply Chain Data)'
+        user_id = session.get('user_id', 1)
+        db.execute(
+            '''INSERT INTO results (user_id, eoq, rop, best_path, transport_cost, total_cost)
+               VALUES (?, ?, ?, ?, ?, ?)''',
+            (user_id, eoq, rop, path_str, transport_cost, total_cost)
+        )
+        db.commit()
+        product_lines = _product_lines_for_inventory(db, transport_cost)
+        if not product_lines:
+            slabel = _summary_product_label(db)
+            product_lines = [{
+                'inventory_id': None,
+                'product_id': None,
+                'label': slabel,
+                'product_name': slabel,
+                'location_id': None,
+                'eoq': eoq,
+                'rop': rop,
+                'transport_cost': breakdown['transport_cost'],
+                'annual_ordering_cost': breakdown['annual_ordering_cost'],
+                'annual_holding_cost': breakdown['annual_holding_cost'],
+                'total_cost': breakdown['total_cost'],
+            }]
         return jsonify({
-            "message": "No routes available yet. Database not populated."
+            'message': 'No routes in the database yet; EOQ/ROP are still computed.',
+            'eoq': eoq,
+            'rop': rop,
+            'path': path_str,
+            'best_path': path_str,
+            'product_lines': product_lines,
+            **breakdown,
         }), 200
 
     try:
         transport_cost, path = dijkstra(graph, start_node, end_node)
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
-
-    # Handle Dijkstra errors
-    try:
-        transport_cost, path = dijkstra(graph, start_node, end_node)
-    except ValueError as e:
-        return jsonify({'error': str(e)}), 400
 
     if not path:
         return jsonify({
@@ -116,8 +201,8 @@ def run_optimization():
 
     path_str = ' → '.join(path)
 
-    # Total cost
-    total_cost = calculate_total_cost(D, S, H, transport_cost)
+    breakdown = annual_inventory_cost_breakdown(D, S, H, transport_cost)
+    total_cost = breakdown['total_cost']
 
     # ── Save results to DB ──
     user_id = session.get('user_id', 1)   # default 1 if session not set
@@ -128,10 +213,28 @@ def run_optimization():
     )
     db.commit()
 
+    product_lines = _product_lines_for_inventory(db, transport_cost)
+    if not product_lines:
+        slabel = _summary_product_label(db)
+        product_lines = [{
+            'inventory_id': None,
+            'product_id': None,
+            'label': slabel,
+            'product_name': slabel,
+            'location_id': None,
+            'eoq': eoq,
+            'rop': rop,
+            'transport_cost': breakdown['transport_cost'],
+            'annual_ordering_cost': breakdown['annual_ordering_cost'],
+            'annual_holding_cost': breakdown['annual_holding_cost'],
+            'total_cost': breakdown['total_cost'],
+        }]
+
     return jsonify({
-        'eoq':            eoq,
-        'rop':            rop,
-        'path':           path_str,
-        'transport_cost': transport_cost,
-        'total_cost':     total_cost
+        'eoq':       eoq,
+        'rop':       rop,
+        'path':      path_str,
+        'best_path': path_str,
+        'product_lines': product_lines,
+        **breakdown,
     }), 200

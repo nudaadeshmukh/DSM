@@ -70,7 +70,7 @@
           <div class="glass-card metric-card">
             <div class="metric-info">
               <h3>EOQ (Economic Order Quantity)</h3>
-              <p>1,250</p>
+              <p id="eoq"></p>
             </div>
             <div class="metric-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -82,7 +82,7 @@
           <div class="glass-card metric-card">
             <div class="metric-info">
               <h3>ROP (Reorder Point)</h3>
-              <p>450</p>
+              <p id="rop"></p>
             </div>
             <div class="metric-icon" style="background: linear-gradient(135deg, #14b8a6, #0f766e);">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -94,7 +94,7 @@
           <div class="glass-card metric-card">
             <div class="metric-info">
               <h3>Transport Cost</h3>
-              <p>$24,500</p>
+              <p id="transportCost"></p>
             </div>
             <div class="metric-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -109,7 +109,7 @@
           <div class="glass-card metric-card">
             <div class="metric-info">
               <h3>Total Cost</h3>
-              <p>$156,890</p>
+              <p id="totalCost"></p>
             </div>
             <div class="metric-icon" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -120,56 +120,47 @@
           </div>
         </div>
 
-        <!-- Results Table -->
+        <!-- Table -->
         <div class="glass-card" style="padding: 24px; margin-bottom: 32px;">
-          <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">Detailed Results</h2>
+          <h2>Detailed Results</h2>
+
           <table>
             <thead>
-              <tr>
-                <th>Product</th>
-                <th>EOQ</th>
-                <th>ROP</th>
-                <th>Transport Cost</th>
-                <th>Total Cost</th>
-              </tr>
+            <tr>
+              <th>Product</th>
+              <th>EOQ</th>
+              <th>ROP</th>
+              <th>Transport Cost</th>
+              <th>Total Cost</th>
+            </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td style="font-weight: 600;">Product A</td>
-                <td>500</td>
-                <td>150</td>
-                <td>$8,000</td>
-                <td style="font-weight: 600;">$52,000</td>
-              </tr>
-              <tr>
-                <td style="font-weight: 600;">Product B</td>
-                <td>350</td>
-                <td>120</td>
-                <td>$6,500</td>
-                <td style="font-weight: 600;">$38,500</td>
-              </tr>
-              <tr>
-                <td style="font-weight: 600;">Product C</td>
-                <td>400</td>
-                <td>180</td>
-                <td>$10,000</td>
-                <td style="font-weight: 600;">$66,390</td>
-              </tr>
-            </tbody>
+
+            <tbody id="resultsTableBody"></tbody>
           </table>
         </div>
 
-        <!-- Chart Placeholder -->
-        <div class="glass-card" style="padding: 24px;">
-          <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">Cost Analysis</h2>
-          <div class="chart-placeholder">
-            <p>Chart visualization area</p>
+
+        <!-- Cost analysis chart (data from last optimization run) -->
+        <div class="glass-card cost-analysis-card">
+          <h2 class="cost-analysis-title">Cost Analysis</h2>
+          <p class="cost-analysis-sub">Breakdown of annual ordering, holding, and transport costs</p>
+          <div class="cost-chart-wrap">
+            <canvas id="costChart" aria-label="Cost breakdown chart"></canvas>
           </div>
+          <p id="costChartEmpty" class="cost-chart-empty" hidden>Run an optimization to see cost breakdown here.</p>
         </div>
+
+        <p>Path: <span id="path"></span></p>
+
       </main>
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="script.js"></script>
+  <script>
+    loadResults();
+  </script>
+
 </body>
 </html>

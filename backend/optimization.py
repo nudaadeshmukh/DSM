@@ -133,3 +133,18 @@ def calculate_total_cost(D: float, S: float, H: float,
     holding_cost  = (eoq / 2) * H
     total = ordering_cost + holding_cost + transport_cost
     return round(total, 2)
+
+
+def annual_inventory_cost_breakdown(D: float, S: float, H: float, transport_cost: float) -> dict:
+    """EOQ-based annual ordering, holding, plus transport (all rounded)."""
+    eoq = calculate_eoq(D, S, H)
+    ordering = round((D / eoq) * S, 2)
+    holding = round((eoq / 2) * H, 2)
+    t = round(float(transport_cost), 2)
+    total = round(ordering + holding + t, 2)
+    return {
+        'annual_ordering_cost': ordering,
+        'annual_holding_cost': holding,
+        'transport_cost': t,
+        'total_cost': total,
+    }

@@ -61,11 +61,13 @@ def login():
 
     session['user_id']  = user['user_id']
     session['username'] = user['username']
+    session['email']    = user['email']
 
     return jsonify({
         'message':  'Login successful.',
         'user_id':  user['user_id'],
-        'username': user['username']
+        'username': user['username'],
+        'email':    user['email'],
     }), 200
 
 
@@ -83,5 +85,6 @@ def me():
         return jsonify({'error': 'Not authenticated.'}), 401
     return jsonify({
         'user_id':  session['user_id'],
-        'username': session['username']
+        'username': session['username'],
+        'email':    session.get('email', ''),
     }), 200

@@ -62,39 +62,92 @@
       <main class="main-content">
         <div class="page-header">
           <h1>Supply Chain Data</h1>
-          <p>Manage products, inventory, and transportation routes</p>
+          <p>Manage products, inventory, and transportation routes (synced with the API)</p>
+        </div>
+
+        <!-- Network nodes (needed for inventory locations and route endpoints) -->
+        <div class="glass-card data-section">
+          <h2>Network nodes</h2>
+          <p class="sc-hint">Add warehouses before inventory rows. Suppliers and retailers are used as route endpoints (e.g. <strong>S1</strong>, <strong>R1</strong>). <span id="scNodesSummary"></span></p>
+          <div class="form-row" style="align-items: flex-end;">
+            <form id="scWarehouseForm" class="form-row" style="flex: 1; margin: 0;" onsubmit="submitScWarehouse(event)">
+              <div class="form-group">
+                <label>Warehouse name</label>
+                <input type="text" id="scWhName" class="form-input" placeholder="Central DC" required>
+              </div>
+              <div class="form-group">
+                <label>Location</label>
+                <input type="text" id="scWhLoc" class="form-input" placeholder="City, ST" required>
+              </div>
+              <div class="form-group" style="align-self: flex-end;">
+                <button type="submit" class="btn btn-secondary btn-sm">Add warehouse</button>
+              </div>
+            </form>
+          </div>
+          <div class="form-row" style="margin-top: 12px; align-items: flex-end;">
+            <form id="scSupplierForm" class="form-row" style="flex: 1; margin: 0;" onsubmit="submitScSupplier(event)">
+              <div class="form-group">
+                <label>Supplier name</label>
+                <input type="text" id="scSupName" class="form-input" placeholder="Acme Corp" required>
+              </div>
+              <div class="form-group">
+                <label>Lead time (days)</label>
+                <input type="number" id="scSupLead" class="form-input" placeholder="5" min="0" step="any" required>
+              </div>
+              <div class="form-group" style="align-self: flex-end;">
+                <button type="submit" class="btn btn-secondary btn-sm">Add supplier</button>
+              </div>
+            </form>
+          </div>
+          <div class="form-row" style="margin-top: 12px; align-items: flex-end;">
+            <form id="scRetailerForm" class="form-row" style="flex: 1; margin: 0;" onsubmit="submitScRetailer(event)">
+              <div class="form-group">
+                <label>Retailer name</label>
+                <input type="text" id="scRetName" class="form-input" placeholder="Main Street Store" required>
+              </div>
+              <div class="form-group">
+                <label>Location</label>
+                <input type="text" id="scRetLoc" class="form-input" placeholder="Address" required>
+              </div>
+              <div class="form-group" style="align-self: flex-end;">
+                <button type="submit" class="btn btn-secondary btn-sm">Add retailer</button>
+              </div>
+            </form>
+          </div>
         </div>
 
         <!-- Products Section -->
         <div class="glass-card data-section">
           <h2>Products</h2>
-          <form id="productForm" onsubmit="addProduct(event)">
+          <form id="scProductForm" onsubmit="submitScProduct(event)">
             <div class="form-row">
               <div class="form-group">
-                <label>Product Name</label>
-                <input type="text" id="productName" class="form-input" placeholder="Enter product name" required>
+                <label>Product name</label>
+                <input type="text" id="scProdName" class="form-input" placeholder="e.g. Widget A" required>
               </div>
               <div class="form-group">
-                <label>Holding Cost</label>
-                <input type="number" id="holdingCost" class="form-input" placeholder="Enter holding cost" required>
+                <label>Holding cost ($ / unit / year)</label>
+                <input type="number" id="scProdHolding" class="form-input" placeholder="2.5" min="0" step="any" required>
               </div>
               <div class="form-group">
-                <label>Ordering Cost</label>
-                <input type="number" id="orderingCost" class="form-input" placeholder="Enter ordering cost" required>
+                <label>Ordering cost ($ / order)</label>
+                <input type="number" id="scProdOrdering" class="form-input" placeholder="50" min="0" step="any" required>
               </div>
             </div>
             <button type="submit" class="btn btn-secondary">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Add Product
+              Add product
             </button>
           </form>
 
-          <table id="productsTable">
+          <table>
             <thead>
               <tr>
-                <th>Product Name</th>
-                <th>Holding Cost</th>
-                <th>Ordering Cost</th>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Holding cost</th>
+                <th>Ordering cost</th>
+                <th class="table-actions">Actions</th>
               </tr>
             </thead>
             <tbody id="productsTableBody"></tbody>
@@ -104,33 +157,53 @@
         <!-- Inventory Section -->
         <div class="glass-card data-section">
           <h2>Inventory</h2>
-          <form id="inventoryForm" onsubmit="addInventory(event)">
+          <p class="sc-hint">Tie demand and costs to a warehouse and product. IDs must exist in Warehouses and Products above.</p>
+          <form id="scInventoryForm" onsubmit="submitScInventory(event)">
             <div class="form-row">
               <div class="form-group">
-                <label>Demand</label>
-                <input type="number" id="demand" class="form-input" placeholder="Enter demand" required>
+                <label>Warehouse</label>
+                <select id="scInvWarehouse" class="form-input" required></select>
               </div>
               <div class="form-group">
-                <label>Lead Time (days)</label>
-                <input type="number" id="leadTime" class="form-input" placeholder="Enter lead time" required>
+                <label>Product</label>
+                <select id="scInvProduct" class="form-input" required></select>
               </div>
               <div class="form-group">
-                <label>Costs</label>
-                <input type="number" id="costs" class="form-input" placeholder="Enter costs" required>
+                <label>Annual demand (units)</label>
+                <input type="number" id="scInvDemand" class="form-input" placeholder="1000" min="0" step="any" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Ordering cost ($ / order)</label>
+                <input type="number" id="scInvOrdering" class="form-input" placeholder="50" min="0" step="any" required>
+              </div>
+              <div class="form-group">
+                <label>Holding cost ($ / unit / year)</label>
+                <input type="number" id="scInvHolding" class="form-input" placeholder="2" min="0" step="any" required>
+              </div>
+              <div class="form-group">
+                <label>Lead time (days)</label>
+                <input type="number" id="scInvLead" class="form-input" placeholder="7" min="0" step="any" required>
               </div>
             </div>
             <button type="submit" class="btn btn-secondary">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Add Inventory
+              Add inventory row
             </button>
           </form>
 
-          <table id="inventoryTable">
+          <table>
             <thead>
               <tr>
+                <th>ID</th>
+                <th>Location</th>
+                <th>Product</th>
                 <th>Demand</th>
-                <th>Lead Time</th>
-                <th>Costs</th>
+                <th>Lead time</th>
+                <th>Ordering</th>
+                <th>Holding</th>
+                <th class="table-actions">Actions</th>
               </tr>
             </thead>
             <tbody id="inventoryTableBody"></tbody>
@@ -139,34 +212,53 @@
 
         <!-- Routes Section -->
         <div class="glass-card data-section">
-          <h2>Transportation Routes</h2>
-          <form id="routeForm" onsubmit="addRoute(event)">
+          <h2>Transportation routes</h2>
+          <p class="sc-hint">Node types match optimization: <strong>S</strong> = supplier ID, <strong>W</strong> = warehouse ID, <strong>R</strong> = retailer ID (e.g. source S1 → destination W1).</p>
+          <form id="routeForm" onsubmit="submitScRoute(event)">
             <div class="form-row">
               <div class="form-group">
-                <label>Source</label>
-                <input type="text" id="source" class="form-input" placeholder="Enter source location" required>
+                <label>Source type</label>
+                <select id="scRouteSrcType" class="form-input" required>
+                  <option value="S">S — Supplier</option>
+                  <option value="W">W — Warehouse</option>
+                  <option value="R">R — Retailer</option>
+                </select>
               </div>
               <div class="form-group">
-                <label>Destination</label>
-                <input type="text" id="destination" class="form-input" placeholder="Enter destination" required>
+                <label>Source ID</label>
+                <input type="number" id="scRouteSrcId" class="form-input" placeholder="1" min="1" step="1" required>
               </div>
               <div class="form-group">
-                <label>Cost</label>
-                <input type="number" id="cost" class="form-input" placeholder="Enter cost" required>
+                <label>Destination type</label>
+                <select id="scRouteDstType" class="form-input" required>
+                  <option value="S">S — Supplier</option>
+                  <option value="W" selected>W — Warehouse</option>
+                  <option value="R">R — Retailer</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Destination ID</label>
+                <input type="number" id="scRouteDstId" class="form-input" placeholder="1" min="1" step="1" required>
+              </div>
+              <div class="form-group">
+                <label>Transport cost</label>
+                <input type="number" id="scRouteCost" class="form-input" placeholder="120" min="0" step="any" required>
               </div>
             </div>
             <button type="submit" class="btn btn-secondary">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Add Route
+              Add route
             </button>
           </form>
 
-          <table id="routesTable">
+          <table>
             <thead>
               <tr>
+                <th>ID</th>
                 <th>Source</th>
                 <th>Destination</th>
                 <th>Cost</th>
+                <th class="table-actions">Actions</th>
               </tr>
             </thead>
             <tbody id="routesTableBody"></tbody>
