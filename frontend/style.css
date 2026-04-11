@@ -630,8 +630,8 @@ table tbody tr:hover {
 }
 
 .optimization-icon {
-  width: 96px;
-  height: 96px;
+  width: 60px;
+  height: 60px;
   margin: 0 auto 24px;
   background: linear-gradient(135deg, #2563eb, #14b8a6);
   border-radius: 50%;
@@ -890,4 +890,46 @@ table tbody tr:hover {
 #msg {  
   text-align: center;
   margin-top: 10px;
+}
+
+/* Wrap each input in a div.input-wrap for the icon + unit badge layout */
+.input-wrap {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  padding: 0 14px;
+  transition: border 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.input-wrap:focus-within {
+  background: rgba(255, 255, 255, 0.32);
+  border-color: rgba(255, 255, 255, 0.75);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.18);
+}
+
+.input-field {
+  background: transparent;
+  border: none;
+  outline: none;
+  flex: 1;
+  padding: 10px 8px;
+  font-size: 14px;
+  color: #fff;
+}
+
+.input-field::placeholder {
+  color: rgba(85, 84, 84, 0.5);
+}
+
+.field-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.75);
+  padding-left: 4px;
+  margin-bottom: 5px;
+  display: block;
 }

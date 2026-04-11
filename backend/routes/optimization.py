@@ -155,7 +155,7 @@ def run_optimization():
         transport_cost = 0.0
         breakdown = annual_inventory_cost_breakdown(D, S, H, transport_cost)
         total_cost = breakdown['total_cost']
-        path_str = '— (add transportation routes in Supply Chain Data)'
+        path_str = '— (add transportation routes in LogiBrain Data)'
         user_id = session.get('user_id', 1)
         db.execute(
             '''INSERT INTO results (user_id, eoq, rop, best_path, transport_cost, total_cost)

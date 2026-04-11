@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Profile - Supply Chain</title>
+  <title>Profile - LogiBrain</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -13,14 +13,14 @@
   <div class="glass-card form-card">
 
     <!-- Back Button -->
-    <button onclick="goBack()" class="btn btn-primary" >← Dashboard</button>
+    <button onclick="goBack()" class="btn btn-primary">← Dashboard</button>
 
     <div class="form-header">
       <h1>Profile</h1>
     </div>
 
     <!-- Profile Avatar -->
-    <div class="profile-avatar" id="avatar"></div>
+    <div class="profile-avatar" id="avatar">?</div>
 
     <!-- User Info -->
     <div class="profile-info-box">
@@ -31,24 +31,24 @@
     <!-- Change Password -->
     <form onsubmit="changePassword(event)">
 
-        <div class="form-group">
-          <label for="currentPassword">Current Password</label>
-          <input type="password" id="currentPassword" class="form-input" placeholder="......" required>
-        </div>
-
-        <div class="form-group">
-          <label for="newPassword">New Password</label>
-          <input type="password" id="newPassword" class="form-input" placeholder="......" required>
-        </div>
-
-        <div class="form-group">
-          <label for="confirmPassword">Confirm Password</label>
-          <input type="password" id="confirmPassword" class="form-input" placeholder="......" required>
-        </div>
-
-      <div style="text-align:center"></div>
-        <button type="submit" class="btn btn-primary" style="width : 100%">Update Password</button>
+      <div class="form-group">
+        <label>Current Password</label>
+        <input type="password" id="currentPassword" class="form-input" required>
       </div>
+
+      <div class="form-group">
+        <label>New Password</label>
+        <input type="password" id="newPassword" class="form-input" required>
+      </div>
+
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" id="confirmPassword" class="form-input" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width:100%">
+        Update Password
+      </button>
 
     </form>
 
@@ -59,14 +59,23 @@
 </div>
 
 <script>
+// ✅ Load user safely
 const user = JSON.parse(localStorage.getItem("user"));
 
-if (user) {
-  document.getElementById("name").innerText = user.name;
+if (!user || !user.username) {
+  // ❌ No user → redirect to login
+  window.location.href = "login.html";
+} else {
+  // ✅ Set profile data
+  document.getElementById("name").innerText = user.username;
   document.getElementById("email").innerText = user.email;
-  document.getElementById("avatar").innerText = user.name.charAt(0).toUpperCase();
+
+  // Avatar first letter
+  document.getElementById("avatar").innerText =
+    user.username.charAt(0).toUpperCase();
 }
 
+// 🔐 Change Password (Frontend only demo)
 function changePassword(e) {
   e.preventDefault();
 
@@ -77,27 +86,30 @@ function changePassword(e) {
 
   let storedUser = JSON.parse(localStorage.getItem("user"));
 
+  // ⚠️ Demo fallback password (remove in real app)
   if (!storedUser.password) storedUser.password = "1234";
 
   if (current !== storedUser.password) {
-    msg.innerText = "❌ Wrong current password";
+    msg.innerText = "Wrong current password";
     msg.style.color = "red";
     return;
   }
 
   if (newPass !== confirm) {
-    msg.innerText = "❌ Password mismatch";
+    msg.innerText = "Password mismatch";
     msg.style.color = "red";
     return;
   }
 
+  // Update locally
   storedUser.password = newPass;
   localStorage.setItem("user", JSON.stringify(storedUser));
 
-  msg.innerText = "✅ Password updated";
+  msg.innerText = "Password updated successfully";
   msg.style.color = "lightgreen";
 }
 
+// 🔙 Back button
 function goBack() {
   window.location.href = "dashboard.html";
 }

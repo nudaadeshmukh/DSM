@@ -1,10 +1,11 @@
-# 📦 Supply Chain Optimization & Inventory Management System
+# 📦 LogiBrain Optimization & Inventory Management System
 
 ## 📌 Project Overview
 
-This project is a web-based system designed to optimize inventory management and transportation decisions in a retail supply chain.
+This project is a web-based system designed to optimize inventory management and transportation decisions in a retail LogiBrain.
 
 It integrates:
+
 - 📊 **Economic Order Quantity (EOQ)**
 - 🔁 **Reorder Point (ROP)**
 - 🛣️ **Shortest Path Optimization (Dijkstra Algorithm)**
@@ -45,9 +46,9 @@ TC = (D/Q)S + (Q/2)H + Transportation Cost
 
 ### 🔹 Graph Model
 
-- **Nodes**: Suppliers, Warehouses, Retailers  
-- **Edges**: Transportation routes  
-- **Weight**: Cost of transportation  
+- **Nodes**: Suppliers, Warehouses, Retailers
+- **Edges**: Transportation routes
+- **Weight**: Cost of transportation
 
 ---
 
@@ -68,17 +69,21 @@ Database (SQLite)
 ## 💻 Tech Stack
 
 ### 🔹 Frontend
+
 - HTML
 - CSS
 - JavaScript
 
 ### 🔹 Backend
+
 - Python (Flask)
 
 ### 🔹 Database
+
 - SQLite
 
 ### 🔹 Algorithms
+
 - EOQ Model
 - Reorder Point Calculation
 - Dijkstra's Algorithm
@@ -110,7 +115,7 @@ supply-chain-optimizer/
 ## ⚙️ Features
 
 - 🔐 User authentication (Login/Register)
-- 📥 Input supply chain data (demand, cost, routes)
+- 📥 Input LogiBrain data (demand, cost, routes)
 - 🧮 Automatic EOQ & ROP calculation
 - 🛣️ Shortest path computation for transportation
 - 📊 Total cost analysis
@@ -149,6 +154,7 @@ INIT_DB_ON_STARTUP=false
 ```
 
 Notes:
+
 - `INIT_DB_ON_STARTUP=false` is recommended when your schema already exists.
 - If you want the app to bootstrap tables for a fresh DB, set `INIT_DB_ON_STARTUP=true`.
 
@@ -166,6 +172,7 @@ Base URL: `http://127.0.0.1:5000`
 
 1. Register user  
    `POST /api/auth/register`
+
    ```json
    {
      "username": "testuser",
@@ -177,6 +184,7 @@ Base URL: `http://127.0.0.1:5000`
 
 2. Login (use Postman cookie jar/session)  
    `POST /api/auth/login`
+
    ```json
    {
      "email_or_username": "testuser",
@@ -184,13 +192,14 @@ Base URL: `http://127.0.0.1:5000`
    }
    ```
 
-3. Populate master data  
-   - `POST /api/supply-chain/suppliers`  
-   - `POST /api/supply-chain/warehouses`  
-   - `POST /api/supply-chain/retailers`  
-   - `POST /api/supply-chain/products`  
-   - `POST /api/supply-chain/inventory`  
+3. Populate master data
+   - `POST /api/supply-chain/suppliers`
+   - `POST /api/supply-chain/warehouses`
+   - `POST /api/supply-chain/retailers`
+   - `POST /api/supply-chain/products`
+   - `POST /api/supply-chain/inventory`
    - `POST /api/supply-chain/routes` with:
+
    ```json
    {
      "source_id": 1,
@@ -203,6 +212,7 @@ Base URL: `http://127.0.0.1:5000`
 
 4. Run optimization  
    `POST /api/optimize`
+
    ```json
    {
      "demand": 1000,
@@ -214,7 +224,7 @@ Base URL: `http://127.0.0.1:5000`
    }
    ```
 
-5. Verify stored results  
+5. Verify stored results
    - `GET /api/results/`
    - `GET /api/results/latest`
 
@@ -223,6 +233,7 @@ Base URL: `http://127.0.0.1:5000`
 ## 📊 Example Input/Output
 
 **Example Input:**
+
 ```json
 {
   "demand": 1000,
@@ -233,6 +244,7 @@ Base URL: `http://127.0.0.1:5000`
 ```
 
 **Example Output:**
+
 ```json
 {
   "eoq": 224,
