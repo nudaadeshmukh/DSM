@@ -139,7 +139,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-### 2.1️⃣ Connect existing MySQL database
+### 3️⃣ Connect existing MySQL database
 
 Create `backend/.env` from `backend/.env.example` and update:
 
@@ -158,7 +158,7 @@ Notes:
 - `INIT_DB_ON_STARTUP=false` is recommended when your schema already exists.
 - If you want the app to bootstrap tables for a fresh DB, set `INIT_DB_ON_STARTUP=true`.
 
-### 3️⃣ Open Frontend
+### 4️⃣ Open Frontend
 
 Open `frontend/pages/login.html` in browser  
 **OR**  
