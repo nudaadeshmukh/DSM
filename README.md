@@ -1,4 +1,4 @@
-# 📦 Supply Chain Optimization & Inventory Management System
+# Supply Chain Optimization & Inventory Management System
 
 ## 📌 Project Overview
 
