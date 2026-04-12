@@ -1,8 +1,8 @@
-# 📦 LogiBrain Optimization & Inventory Management System
+# 📦 Supply Chain Optimization & Inventory Management System
 
 ## 📌 Project Overview
 
-This project is a web-based system designed to optimize inventory management and transportation decisions in a retail LogiBrain.
+This project is a web-based system designed to optimize inventory management and transportation decisions in a retail supply chain.
 
 It integrates:
 
@@ -10,7 +10,7 @@ It integrates:
 - 🔁 **Reorder Point (ROP)**
 - 🛣️ **Shortest Path Optimization (Dijkstra Algorithm)**
 
-**Goal**: Minimize total cost while ensuring continuous product availability across suppliers, warehouses, and retailers.
+**Goal**: Minimize total cost while ensuring continuous product availability across suppliers, warehouses and retailers.
 
 ---
 
@@ -115,7 +115,7 @@ supply-chain-optimizer/
 ## ⚙️ Features
 
 - 🔐 User authentication (Login/Register)
-- 📥 Input LogiBrain data (demand, cost, routes)
+- 📥 Input supply chain data (demand, cost, routes)
 - 🧮 Automatic EOQ & ROP calculation
 - 🛣️ Shortest path computation for transportation
 - 📊 Total cost analysis
