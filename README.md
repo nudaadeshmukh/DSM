@@ -147,9 +147,9 @@ Create `backend/.env` from `backend/.env.example` and update:
 DB_BACKEND=mysql
 MYSQL_HOST=localhost
 MYSQL_PORT=3306
-MYSQL_USER=your_user
+MYSQL_USER=your_username
 MYSQL_PASSWORD=your_password
-MYSQL_DATABASE=your_existing_db
+MYSQL_DATABASE=your_db_name
 INIT_DB_ON_STARTUP=false
 ```
 
