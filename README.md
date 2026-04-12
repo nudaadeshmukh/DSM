@@ -56,11 +56,11 @@ TC = (D/Q)S + (Q/2)H + Transportation Cost
 
 ```
 Frontend (HTML/CSS/JS)
-↓
+         ↓
 Backend (Flask API)
-↓
+         ↓
 Optimization Engine (EOQ + ROP + Dijkstra)
-↓
+         ↓
 Database (SQLite)
 ```
 
