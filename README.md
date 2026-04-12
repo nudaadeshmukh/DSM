@@ -6,9 +6,9 @@ This project is a web-based system designed to optimize inventory management and
 
 It integrates:
 
-- 📊 **Economic Order Quantity (EOQ)**
-- 🔁 **Reorder Point (ROP)**
-- 🛣️ **Shortest Path Optimization (Dijkstra Algorithm)**
+- **Economic Order Quantity (EOQ)**
+- **Reorder Point (ROP)**
+- **Shortest Path Optimization (Dijkstra Algorithm)**
 
 **Goal**: Minimize total cost while ensuring continuous product availability across suppliers, warehouses and retailers.
 
@@ -114,12 +114,12 @@ supply-chain-optimizer/
 
 ## ⚙️ Features
 
-- 🔐 User authentication (Login/Register)
-- 📥 Input supply chain data (demand, cost, routes)
-- 🧮 Automatic EOQ & ROP calculation
-- 🛣️ Shortest path computation for transportation
-- 📊 Total cost analysis
-- 📈 Results visualization
+- User authentication (Login/Register)
+- Input supply chain data (demand, cost, routes)
+- Automatic EOQ & ROP calculation
+- Shortest path computation for transportation
+- Total cost analysis
+- Results visualization
 
 ---
 
